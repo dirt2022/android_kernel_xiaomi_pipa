@@ -7581,6 +7581,60 @@ static struct snd_soc_dai_link sec_mi2s_rx_cs35l41_dai_links[] = {
 	},
 };
 
+static struct snd_soc_dai_link tert_mi2s_rx_aw882xx_dai_links[] = {
+#if defined(CONFIG_TARGET_PRODUCT_PIPA)
+	{
+		.name = LPASS_BE_TERT_TDM_RX_0,
+		.stream_name = "Tertiary TDM0 Playback",
+		.cpu_dai_name = "msm-dai-q6-tdm.36896",
+		.platform_name = "msm-pcm-routing",
+		.codecs = aw882xx_codec_components,
+		.num_codecs = ARRAY_SIZE(aw882xx_codec_components),
+		.no_pcm = 1,
+		.dpcm_playback = 1,
+		.id = MSM_BACKEND_DAI_TERT_TDM_RX_0,
+		.be_hw_params_fixup = msm_be_hw_params_fixup,
+		.ops = &kona_tdm_be_ops,
+		.ignore_suspend = 1,
+		.ignore_pmdown_time = 1,
+		//.init = &cs35l41_init,
+	},
+	{
+		.name = LPASS_BE_TERT_TDM_RX_1,
+		.stream_name = "Tertiary TDM1 Playback",
+		.cpu_dai_name = "msm-dai-q6-tdm.36898",
+		.platform_name = "msm-pcm-routing",
+		.codecs = aw882xx_codec_components,
+		.num_codecs = ARRAY_SIZE(aw882xx_codec_components),
+		.no_pcm = 1,
+		.dpcm_playback = 1,
+		.id = MSM_BACKEND_DAI_TERT_TDM_RX_1,
+		.be_hw_params_fixup = msm_be_hw_params_fixup,
+		.ops = &kona_tdm_be_ops,
+		.ignore_suspend = 1,
+		.ignore_pmdown_time = 1,
+		//.init = &cs35l41_init,
+	},
+#else
+	{
+		.name = LPASS_BE_TERT_MI2S_RX,
+		.stream_name = "Tertiary MI2S Playback",
+		.cpu_dai_name = "msm-dai-q6-mi2s.2",
+		.platform_name = "msm-pcm-routing",
+		.codecs = aw882xx_codec_components,
+		.num_codecs = ARRAY_SIZE(aw882xx_codec_components),
+		.no_pcm = 1,
+		.dpcm_playback = 1,
+		.id = MSM_BACKEND_DAI_TERTIARY_MI2S_RX,
+		.be_hw_params_fixup = msm_be_hw_params_fixup,
+		.ops = &msm_mi2s_be_ops,
+		.ignore_suspend = 1,
+		.ignore_pmdown_time = 1,
+		//.init = &cs35l41_init,
+	},
+#endif
+};
+
 #endif
 static struct snd_soc_dai_link msm_auxpcm_be_dai_links[] = {
 	/* Primary AUX PCM Backend DAI Links */
@@ -8309,6 +8363,12 @@ static struct snd_soc_card *populate_snd_card_dailinks(struct device *dev)
 						sizeof(pri_mi2s_rx_tfa9874_dai_links));
 					total_links += ARRAY_SIZE(pri_mi2s_rx_tfa9874_dai_links);
 					dev_info(dev, "%s: Using pri_mi2s_rx_tfa9874_dai_links\n", __func__);
+				} else if (get_hw_version_platform() == HARDWARE_PLATFORM_PIPA) {
+					memcpy(msm_kona_dai_links + total_links,
+						tert_mi2s_rx_aw882xx_dai_links,
+						sizeof(tert_mi2s_rx_aw882xx_dai_links));
+					total_links += ARRAY_SIZE(tert_mi2s_rx_aw882xx_dai_links);
+					dev_info(dev, "%s: Using tert_mi2s_rx_aw882xx_dai_links\n", __func__);
 				}
 #endif
 #ifdef CONFIG_BOARD_XIAOMI_SM7250
