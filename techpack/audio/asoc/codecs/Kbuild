@@ -239,6 +239,7 @@ ifeq ($(KERNEL_BUILD), 1)
 	obj-y	+= wcd937x/
 	obj-y	+= wcd938x/
 	obj-y	+= bolero/
+	obj-y	+= aw882xx/
 ifneq ($(filter y, $(CONFIG_BOARD_ENUMA) $(CONFIG_BOARD_ELISH)),)
 	obj-y	+= cs35l41_k81/
 else 
