@@ -100,6 +100,10 @@
     #define CS35L41_SPEAKER_NAME "cs35l41.1-0040"
     #define CS35L41_RECEIVER_NAME "cs35l41.1-0041"
   #else
+    #define AW882XX_SPEAKER_NAME_1 "0-0036"
+    #define AW882XX_SPEAKER_NAME_2 "0-0037"
+    #define AW882XX_SPEAKER_NAME_3 "2-0034"
+    #define AW882XX_SPEAKER_NAME_4 "2-0035"
     #define CS35L41_SPEAKER_NAME "cs35l41.1-0040"
     #define CS35L41_RECEIVER_NAME "cs35l41.1-0042"
   #endif
@@ -122,6 +126,31 @@ static struct snd_soc_dai_link_component tfa98xx_codec_components[]=
 		.name = TFA98xx_SPEAKER_NAME,
 		.dai_name = "tfa98xx-aif-1-35",
 	},
+};
+#endif
+
+#if defined(CONFIG_TARGET_PRODUCT_PIPA)
+struct snd_soc_dai_link_component aw882xx_codec_components[] = {
+	{
+		.name = AW882XX_SPEAKER_NAME_1,
+		//.dai_name = "cs35l41-pcm",
+		.dai_name = "aw882xx-aif-0-36",
+	},
+	{
+                .name = AW882XX_SPEAKER_NAME_2,
+                //.dai_name = "cs35l41-pcm",
+                .dai_name = "aw882xx-aif-0-37",
+        },
+        {
+                .name = AW882XX_SPEAKER_NAME_3,
+                //.dai_name = "cs35l41-pcm",
+                .dai_name = "aw882xx-aif-2-34",
+        },
+        {
+                .name = AW882XX_SPEAKER_NAME_4,
+                //.dai_name = "cs35l41-pcm",
+                .dai_name = "aw882xx-aif-2-35",
+        },
 };
 #endif
 
@@ -176,7 +205,6 @@ struct snd_soc_dai_link_component cs35l41_codec_components[] = {
 #endif
 };
 #endif
-
 #ifdef CONFIG_TARGET_PRODUCT_MUNCH
 static struct snd_soc_codec_conf tfa98xx_codec_conf[] = {
 	{
@@ -203,7 +231,16 @@ static struct snd_soc_codec_conf cs35l41_codec_conf[] = {
 #endif
 };
 #endif
-
+/*
+#if defined(CONFIG_TARGET_PRODUCT_PIPA)
+static struct snd_soc_codec_conf aw882xx_codec_conf[] = {
+        {
+                .dev_name       = AW882XX_SPEAKER_NAME,
+                .name_prefix    = "SPK",
+        },
+};
+#endif
+*/
 #define SWR_MAX_SLAVE_DEVICES 6
 
 enum {
@@ -7581,6 +7618,8 @@ static struct snd_soc_dai_link sec_mi2s_rx_cs35l41_dai_links[] = {
 	},
 };
 
+#endif
+
 static struct snd_soc_dai_link tert_mi2s_rx_aw882xx_dai_links[] = {
 #if defined(CONFIG_TARGET_PRODUCT_PIPA)
 	{
@@ -7635,7 +7674,6 @@ static struct snd_soc_dai_link tert_mi2s_rx_aw882xx_dai_links[] = {
 #endif
 };
 
-#endif
 static struct snd_soc_dai_link msm_auxpcm_be_dai_links[] = {
 	/* Primary AUX PCM Backend DAI Links */
 	{
@@ -8037,6 +8075,8 @@ static struct snd_soc_dai_link msm_kona_dai_links[
 			ARRAY_SIZE(sec_mi2s_rx_tfa9874_be_dai_links) +
 			ARRAY_SIZE(sec_mi2s_rx_cs35l41_dai_links) +
 #endif
+// I am not sure whether the device would be mounted when AUDIO_SM8250_FLAG isn't defined.
+			ARRAY_SIZE(tert_mi2s_rx_aw882xx_dai_links) +
 			ARRAY_SIZE(msm_auxpcm_be_dai_links) +
 			ARRAY_SIZE(msm_wsa_cdc_dma_be_dai_links) +
 			ARRAY_SIZE(msm_rx_tx_cdc_dma_be_dai_links) +
