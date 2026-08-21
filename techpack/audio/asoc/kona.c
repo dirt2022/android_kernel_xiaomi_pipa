@@ -100,10 +100,10 @@
     #define CS35L41_SPEAKER_NAME "cs35l41.1-0040"
     #define CS35L41_RECEIVER_NAME "cs35l41.1-0041"
   #else
-    #define AW882XX_SPEAKER_NAME_1 "0-0036"
-    #define AW882XX_SPEAKER_NAME_2 "0-0037"
-    #define AW882XX_SPEAKER_NAME_3 "2-0034"
-    #define AW882XX_SPEAKER_NAME_4 "2-0035"
+    #define AW882XX_SPEAKER_NAME_1 "aw882xx_smartpa.0-0036"
+    #define AW882XX_SPEAKER_NAME_2 "aw882xx_smartpa.0-0037"
+    #define AW882XX_SPEAKER_NAME_3 "aw882xx_smartpa.2-0034"
+    #define AW882XX_SPEAKER_NAME_4 "aw882xx_smartpa.2-0035"
     #define CS35L41_SPEAKER_NAME "cs35l41.1-0040"
     #define CS35L41_RECEIVER_NAME "cs35l41.1-0042"
   #endif
