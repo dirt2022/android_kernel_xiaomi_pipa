@@ -114,12 +114,28 @@ static uint32_t afe_param_msg_id[MSG_PARAM_ID_MAX] = {
 #ifdef AW_MTK_PLATFORM_WITH_DSP
 extern int mtk_spk_send_ipi_buf_to_dsp(void *data_buffer, uint32_t data_size);
 extern int mtk_spk_recv_ipi_buf_from_dsp(int8_t *buffer, int16_t size, uint32_t *buf_len);
-#elif defined AW_QCOM_PLATFORM
+#elif defined(AW_QCOM_PLATFORM)
 extern int afe_get_topology(int port_id);
+#if defined(CONFIG_SND_SOC_AW882XX_TDM)
 extern int aw_send_afe_cal_apr(uint32_t param_id,
 	void *buf, int cmd_size, bool write);
 extern int aw_send_afe_rx_module_enable(void *buf, int size);
 extern int aw_send_afe_tx_module_enable(void *buf, int size);
+#else
+static int aw_send_afe_cal_apr(uint32_t param_id,
+        void *buf, int cmd_size, bool write)
+{
+        return 0;
+}
+static int aw_send_afe_rx_module_enable(void *buf, int size)
+{
+        return 0;
+}
+static int aw_send_afe_tx_module_enable(void *buf, int size)
+{
+        return 0;
+}
+#endif
 #else
 static int aw_send_afe_cal_apr(uint32_t param_id,
 	void *buf, int cmd_size, bool write)
@@ -138,10 +154,9 @@ static int afe_get_topology(int port_id)
 {
 	return 0;
 }
-
 #endif
 
-#ifdef AW_QCOM_PLATFORM
+#if defined(AW_QCOM_PLATFORM) && defined(CONFIG_SND_SOC_AW882XX_TDM)
 extern void aw_set_port_id(int tx_port_id, int rx_port_id);
 #else
 static void aw_set_port_id(int tx_port_id, int rx_port_id)
