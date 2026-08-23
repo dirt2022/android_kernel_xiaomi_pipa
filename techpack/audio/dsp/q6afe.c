@@ -4571,6 +4571,10 @@ int afe_send_slot_mapping_cfg_v2(
 {
 	struct param_hdr_v3 param_hdr;
 	int ret = 0;
+#ifdef CONFIG_TARGET_PRODUCT_PIPA
+	unsigned int i;
+	/* for dirryhack. */
+#endif
 
 	if (!slot_mapping_cfg) {
 		pr_err("%s: Error, no configuration data\n", __func__);
@@ -4585,6 +4589,28 @@ int afe_send_slot_mapping_cfg_v2(
 	param_hdr.param_id = AFE_PARAM_ID_PORT_SLOT_MAPPING_CONFIG;
 	param_hdr.param_size = sizeof(struct afe_param_id_slot_mapping_cfg_v2);
 
+	pr_info("afe_send_slot_mapping_cfg_v2: TDM INFO: port_id=0x%x\n", port_id);
+	pr_info("  num_channel: %d\n", slot_mapping_cfg->num_channel);
+	pr_info("  bitwidth: %d\n", slot_mapping_cfg->bitwidth);
+	pr_info("  data_align_type: %d\n", slot_mapping_cfg->data_align_type);
+	pr_info("  offsets: [%d, %d, %d, %d, %d, %d, %d, %d]\n",
+		slot_mapping_cfg->offset[0], slot_mapping_cfg->offset[1], slot_mapping_cfg->offset[2], slot_mapping_cfg->offset[3],
+		slot_mapping_cfg->offset[4], slot_mapping_cfg->offset[5], slot_mapping_cfg->offset[6], slot_mapping_cfg->offset[7]);
+
+#ifdef CONFIG_TARGET_PRODUCT_PIPA
+	if (port_id == 0x9020 && slot_mapping_cfg->num_channel == 4
+			&& slot_mapping_cfg->bitwidth == 32 && slot_mapping_cfg->data_align_type == 0){
+		pr_warn("afe_send_slot_mapping_cfg_v2: (TDM dirtyhack for PIPA enabled) Now hardcode offset array.\n");
+		slot_mapping_cfg->offset[0]=0;
+		slot_mapping_cfg->offset[1]=4;
+		slot_mapping_cfg->offset[2]=8;
+		slot_mapping_cfg->offset[3]=12;
+		slot_mapping_cfg->offset[4]=0xffff;
+		for (i = 4; i < AFE_PORT_MAX_AUDIO_CHAN_CNT_V2; i++){
+			slot_mapping_cfg->offset[i] = AFE_SLOT_MAPPING_OFFSET_INVALID;
+		}
+	}
+#endif
 	ret = q6afe_pack_and_set_param_in_band(port_id,
 					       q6audio_get_port_index(port_id),
 					       param_hdr,
